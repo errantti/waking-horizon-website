@@ -38,11 +38,13 @@
     { id: 'logo-horizontal', name: 'Horizontal, no “Studio”', note: 'For use outside a gaming context' },
     { id: 'logo-stacked', name: 'Stacked', note: 'Centered, with Studio' },
     { id: 'logo-stacked-nostudio', name: 'Stacked, no “Studio”', note: 'Centered, name only' },
+    { id: 'logo-square', name: 'Square', note: 'Centered, with Studio. Avatars and tiles' },
+    { id: 'logo-square-nostudio', name: 'Square, no “Studio”', note: 'Centered, name only' },
     { id: 'mark', name: 'Mark only', note: 'Sunrise and cross-spike. Avatars, icons' },
     { id: 'wordmark', name: 'Wordmark', note: 'Text only' },
     { id: 'wordmark-studio', name: 'Wordmark + Studio', note: 'Text only, with Studio' },
   ];
-  const COLORS = [['color', 'Color'], ['cream', 'Cream'], ['violet', 'Violet'], ['black', 'Black'], ['white', 'White']];
+  const COLORS = [['color', 'Color'], ['cream', 'Cream'], ['black', 'Black'], ['white', 'White']];
   const grid = document.getElementById('logo-grid');
   if (grid) {
     grid.dataset.bg = 'dark';

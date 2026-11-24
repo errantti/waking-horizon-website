@@ -95,13 +95,9 @@ def paste(c, l, x, y):
         c[n].paste(l[n], (round(x), round(y)), l[n])
 
 
-def finish(c):
-    return crop_to_pad(c)
-
-
-def crop_to_pad(c):
+def crop_to_pad(c, pad=PAD):
     b = c["sil"].getbbox()
-    p = PAD * K
+    p = pad * K
     box = (b[0] - p, b[1] - p, b[2] + p, b[3] + p)
     return {n: im.crop(box) for n, im in c.items()}
 
@@ -126,10 +122,10 @@ def horizontal_nostudio():
     return crop_to_pad(c)
 
 
-def stacked(with_studio):
-    ms = scaled(MARK, 1.15)
+def stacked(with_studio, mark_w=None, gap_px=34, pad=PAD):
     ww = WORD["sil"].size[0]
-    gap = 34 * K
+    ms = scaled(MARK, mark_w * ww / MARK["sil"].size[0]) if mark_w else scaled(MARK, 1.15)
+    gap = gap_px * K
     height = ms["sil"].size[1] + gap + WORD["sil"].size[1] + (gap + STUDIO["sil"].size[1] if with_studio else 0)
     c = canvas(ww + 20, height + 20)
     y = 10
@@ -139,7 +135,17 @@ def stacked(with_studio):
     if with_studio:
         y += WORD["sil"].size[1] + gap
         paste(c, STUDIO, (ww - STUDIO["sil"].size[0]) / 2 + 10, y)
-    return crop_to_pad(c)
+    return crop_to_pad(c, pad)
+
+
+def square(with_studio):
+    """Tight square: mark enlarged so the lockup fills the canvas, minimal clear space."""
+    st = stacked(with_studio, mark_w=0.8 if with_studio else 0.9, gap_px=26, pad=20)
+    w, h = st["sil"].size
+    side = max(w, h)
+    c = canvas(side, side)
+    paste(c, st, (side - w) / 2, (side - h) / 2)
+    return c
 
 
 def mark_only():
@@ -163,6 +169,8 @@ VARIANTS = {
     "logo-horizontal": horizontal_nostudio,         # mark + WAKING HORIZON (no Studio)
     "logo-stacked": lambda: stacked(True),          # centered, with Studio
     "logo-stacked-nostudio": lambda: stacked(False),
+    "logo-square": lambda: square(True),            # square, with Studio
+    "logo-square-nostudio": lambda: square(False),  # square, name only
     "mark": mark_only,                              # icon only
     "wordmark": wordmark_only,                      # text only (no Studio)
     "wordmark-studio": wordmark_studio,             # text + Studio
@@ -171,7 +179,6 @@ VARIANTS = {
 COLORWAYS = {
     "color": None,
     "cream": CREAM,
-    "violet": TEAL,
     "black": BLACK,
     "white": WHITE,
 }
@@ -249,6 +256,11 @@ def main():
         print("built", name, l["sil"].size)
     # ------------------------------------------------ icons / social
     bg = (9, 8, 24)
+    for nm in ("logo-square", "logo-square-nostudio"):   # ready-made 1024px avatars on the night background
+        lg = render(built[nm], None, target_w=1024)
+        tile = Image.new("RGBA", lg.size, bg + (255,))
+        tile.alpha_composite(lg)
+        tile.convert("RGB").save(os.path.join(OUT, "png", nm + "-color-on-night.png"), optimize=True)
     mark = built["mark"]
     for size, fname in ((512, "icon-512.png"), (192, "icon-192.png"), (180, "apple-touch-icon.png"), (48, "favicon-48.png"), (32, "favicon-32.png")):
         m = render(mark, None, target_w=round(size * 0.84))

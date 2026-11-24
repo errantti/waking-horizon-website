@@ -23,10 +23,11 @@ CNAME               custom domain for GitHub Pages
 | `logo-full` | mark + WAKING HORIZON + STUDIO |
 | `logo-horizontal` | mark + WAKING HORIZON (no Studio) |
 | `logo-stacked` / `logo-stacked-nostudio` | centered, with / without Studio |
+| `logo-square` / `logo-square-nostudio` | stacked lockup on a square canvas; `*-color-on-night.png` is a ready 1024px avatar |
 | `mark` | sunrise + cross-spike only |
 | `wordmark` / `wordmark-studio` | text only, without / with Studio |
 
-Colorways: `color` (original, for dark backgrounds), `cream`, `violet`, `black`, `white` (flat one-color).
+Colorways: `color` (original, for dark backgrounds), `cream`, `black`, `white` (flat one-color).
 The SVGs are traced from the original raster, so they are scalable but not hand-drawn vectors.
 
 To regenerate after changing the source: `pip install pillow numpy scipy potracer` then `python tools/build_logos.py`
